@@ -10,6 +10,51 @@
 #include "RE/S/StopHitEffectsVisitor.h"
 #include "RE/S/ShaderAccumulator.h"
 
+
+void LogMarkers(RE::LocalMapMenu& localMapMenu) {
+	SKSE::log::info("================================================================================================================");
+	for (int i = 0; i < localMapMenu.mapMarkers.size(); i++) {
+		SKSE::log::info("================================================================================================================");
+		SKSE::log::info("Checking Map Marker: {}", i);
+		if (localMapMenu.mapMarkers[i].data != nullptr) SKSE::log::info("FullName: {}", localMapMenu.mapMarkers[i].data->locationName.GetFullName());
+		SKSE::log::info("Ref: {}", localMapMenu.mapMarkers[i].ref);
+		SKSE::log::info("Pad0c: {}", localMapMenu.mapMarkers[i].pad0C);
+		SKSE::log::info("CustomMarker: {}", localMapMenu.mapMarkers[i].description);
+		SKSE::log::info("Type: {}", localMapMenu.mapMarkers[i].type.underlying());
+		SKSE::log::info("Door: {}", localMapMenu.mapMarkers[i].door);
+		SKSE::log::info("Index: {}", localMapMenu.mapMarkers[i].index);
+		SKSE::log::info("Pad24: {}", localMapMenu.mapMarkers[i].pad24);
+		if (localMapMenu.mapMarkers[i].quest != nullptr) SKSE::log::info("TESQuest Type {}", localMapMenu.mapMarkers[i].quest->GetFullName());
+		SKSE::log::info("Unk30: {}", localMapMenu.mapMarkers[i].unk30);
+		SKSE::log::info("Pad31: {}", localMapMenu.mapMarkers[i].pad31);
+		SKSE::log::info("Pad32: {}", localMapMenu.mapMarkers[i].pad32);
+		SKSE::log::info("Pad34: {}", localMapMenu.mapMarkers[i].pad34);
+	}
+}
+
+void ProcessMarkers(RE::LocalMapMenu& localMapMenu) {
+
+	for (int i = 0; i < localMapMenu.mapMarkers.size(); i++) {
+		if (localMapMenu.mapMarkers[i].description == "The Bannered Mare")
+		{
+
+			RE::MapMenuMarker mapMarker
+			{
+				.data = nullptr,
+				.ref = localMapMenu.mapMarkers[i].ref,
+				.description = "wtf",
+				.type = RE::MapMenuMarker::Type::kLocation, // Playing mind tricks with the game
+				.door = 0,
+				.index = -1,
+				.quest = nullptr,
+				.unk30 = 1
+			};
+
+			localMapMenu.mapMarkers.push_back(mapMarker);
+		}
+	}
+}
+
 bool FakeNotSmallWorld(RE::TESWorldSpace* a_worldSpace)
 {
 	hooks::TESWorldSpace::IsSmallWorld(a_worldSpace);
@@ -21,6 +66,9 @@ void AddExtraAndQuestMarkersToMap(RE::BSTArray<RE::MapMenuMarker>& a_mapMarkers,
 								  std::uint32_t a_arg3)
 {
 	auto& localMapMenu = *(RE::LocalMapMenu*)((std::uintptr_t)&a_mapMarkers - offsetof(RE::LocalMapMenu, mapMarkers));
+
+	LogMarkers(localMapMenu);
+	ProcessMarkers(localMapMenu);
 
 	LMU::ExtraMarkersManager::GetSingleton()->AddExtraMarkers(localMapMenu);
 

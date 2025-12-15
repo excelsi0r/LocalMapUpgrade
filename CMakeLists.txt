@@ -106,7 +106,7 @@ endforeach()
 ## Automatic plugin deployment
 ########################################################################################################################
 
-set(SKYRIM_SE_DIR "C:/Program Files (x86)/Steam/steamapps/common/Skyrim Special Edition")
+set(SKYRIM_SE_DIR "D:/SteamLibrary/steamapps/common/Skyrim Special Edition")
 set(SKYRIM_VR_DIR "C:/Program Files (x86)/Steam/steamapps/common/Skyrim VR")
 
 if ("$ENV{RUNTIME_DISABLE_FLAGS}" STREQUAL "")
